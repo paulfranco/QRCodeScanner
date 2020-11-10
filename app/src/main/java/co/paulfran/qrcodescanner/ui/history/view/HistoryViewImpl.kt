@@ -1,0 +1,44 @@
+package co.paulfran.qrcodescanner.ui.history.view
+
+import android.content.Context
+import android.view.View
+import android.widget.Toast
+import androidx.navigation.NavController
+import co.paulfran.qrcodescanner.data.db.entity.QrModel
+import co.paulfran.qrcodescanner.ui.history.HistoryFragmentDirections
+import co.paulfran.qrcodescanner.ui.history.adapter.HistoryAdapter
+import kotlinx.android.synthetic.main.fragment_history.view.*
+
+class HistoryViewImpl(
+    override var context: Context,
+    override val navController: NavController
+) : HistoryView {
+
+    override lateinit var rootView: View
+
+    override fun navigateToDetails(id: Long) {
+        navController.navigate(HistoryFragmentDirections.fromHistoryToDetails(id))
+    }
+
+    override fun fillHistoryList(items: List<QrModel>) {
+        (rootView.historyRecycler.adapter as HistoryAdapter).items = items
+        rootView.emptyHistoryView.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    override fun changeItemFavoriteIcon(pos: Int, favorite: Boolean) {
+        val adapter = (rootView.historyRecycler.adapter as HistoryAdapter)
+        adapter.items[pos].favorite = favorite
+        adapter.notifyItemChanged(pos)
+    }
+
+    override fun showError(message: String) {
+    }
+
+    override fun showError(message: Int) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showMessage(message: Int) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+}
